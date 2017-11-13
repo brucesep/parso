@@ -13,12 +13,14 @@ import java.io.File;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.text.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.*;
+
+import org.w3c.dom.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 public class GoToHell implements ActionListener {
     panelCH parent;
@@ -43,27 +45,45 @@ public class GoToHell implements ActionListener {
                 DocumentBuilderFactory pan = DocumentBuilderFactory.newInstance();
                 DocumentBuilder text1 = pan.newDocumentBuilder();
                 Document docum = text1.parse(new File(this.paramFile));
+
                 docum.getDocumentElement().normalize();
                 Element root = docum.getDocumentElement();
                 System.out.println("Root element is: " + root.getNodeName());
                 System.out.println("---------------------------------");
                 System.out.println("---------------------------------");
                 NodeList noList = docum.getElementsByTagName(this.paramKey);
-                this.parSo(noList);
+                //parSo(noList);
+                parXpa(docum, paramKey);
             } catch (Exception var7) {
                 var7.printStackTrace();
             }
         }
 
     }
+    public void parXpa(Document document, String parK) throws DOMException, XPathExpressionException{
+        System.out.print("Requested Node: " + parK);
+        XPathFactory pFac = XPathFactory.newInstance();
+        XPath xPa = pFac.newXPath();
+        XPathExpression expr = xPa.compile("//" + parK);
+
+        NodeList nodes = (NodeList) expr.evaluate(document, XPathConstants.NODESET);
+        for (int i = 0; i < nodes.getLength(); i++){
+            Node n = nodes.item(i);
+            System.out.println("Value: " + n.getTextContent());
+        }
+    }
 
     public void parSo(NodeList nnL) {
         for(int i = 0; i < nnL.getLength(); ++i) {
             Node uzelS = nnL.item(i);
-            System.out.println("Requested tag is: " + uzelS.getNodeName());
-            this.parSU(uzelS, 0, this.probel);
+            System.out.print("Requested tag is: " + uzelS.getNodeName());
+            if (uzelS.getNodeType() == Node.ELEMENT_NODE) {
+                Element eE = (Element) uzelS;
+                System.out.print(" " + eE.getTextContent());
+            }
+            System.out.println("");
+           parSU(uzelS, 0, this.probel);
         }
-
     }
 
     public void parSU(Node nodde, int level, String probe2) {
@@ -72,9 +92,9 @@ public class GoToHell implements ActionListener {
 
         for(int j = 0; j < parUzla.getLength(); ++j) {
             Node samUz = parUzla.item(j);
-            System.out.println(probe2 + samUz.getNodeName() + " " + samUz.getTextContent());
+            System.out.println(probe2 + samUz.getNodeName());
+
             this.parSU(samUz, level + 1, probe2);
         }
-
     }
 }

@@ -26,7 +26,7 @@ public class Browsing implements ActionListener {
 
     public void actionPerformed(ActionEvent e1) {
         this.fileOp = new JFileChooser();
-        this.fileOp.setFileFilter(new Browsing.FileFilterE("json", "*.json"));
+        //this.fileOp.setFileFilter(new Browsing.FileFilterE("json", "*.json"));
         this.fileOp.setFileFilter(new Browsing.FileFilterE("xml", "*.xml"));
         this.fileOp.setFileFilter(new FileNameExtensionFilter("xml/json", new String[]{"xml", "json"}));
         int ret = this.fileOp.showDialog((Component)null, "Choose it");
