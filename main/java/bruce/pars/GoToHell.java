@@ -53,7 +53,6 @@ public class GoToHell implements ActionListener {
                 Element root = docum.getDocumentElement();
                 System.out.println("Root element is: " + root.getNodeName());
                 System.out.println("---------------------------------");
-                System.out.println("---------------------------------");
                 NodeList noList = docum.getElementsByTagName(this.paramKey);
                 parSo(noList);
                 //parXpa(docum, paramKey);
@@ -83,7 +82,7 @@ public class GoToHell implements ActionListener {
             NamedNodeMap nodeAtr = uzelS.getAttributes();
             String wwam = "";
             int mMax = nodeAtr.getLength();
-            for (int j = 0; j < mMax; j++){
+            for (int j = 0; j < mMax; j++) {
                 Node newNN = nodeAtr.item(j);
                 if (j != (mMax - 1)) {
                     wwam = newNN.getNodeName() + " = " + "\"" + newNN.getTextContent() + "\"" + ", ";
@@ -100,7 +99,6 @@ public class GoToHell implements ActionListener {
     public void parSU(Node nodde, int level, String probe2) {
         NodeList parUzla = nodde.getChildNodes();
         probe2 = probe2 + " ";
-
         for (int j = 0; j < parUzla.getLength(); ++j) {
             Node samUz = parUzla.item(j);
             System.out.print(probe2 + samUz.getNodeName() + ": ");
@@ -117,10 +115,12 @@ public class GoToHell implements ActionListener {
                     }
                     System.out.print(wam);
                 }
-
             }
-            System.out.println("");
+            if (samUz.getNodeType() != Node.TEXT_NODE) {
+                System.out.print(" " + samUz.getTextContent());
+            }
 
+            System.out.println("");
             this.parSU(samUz, level + 1, probe2);
         }
     }
