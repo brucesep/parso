@@ -101,6 +101,9 @@ public class GoToHell implements ActionListener {
         probe2 = probe2 + " ";
         for (int j = 0; j < parUzla.getLength(); ++j) {
             Node samUz = parUzla.item(j);
+            if (samUz.getNodeType() == Node.TEXT_NODE) {
+                continue;
+            }
             System.out.print(probe2 + samUz.getNodeName() + ": ");
             String wam = "";
             if (samUz.hasAttributes()) {
