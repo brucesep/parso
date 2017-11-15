@@ -7,15 +7,13 @@ package bruce.pars;
 
 import bruce.pars.panelCH;
 
-import java.awt.Component;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.text.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,6 +28,11 @@ public class GoToHell implements ActionListener {
     String paramKey;
     String paramFile;
     String probel = " ";
+    JFrame frame;
+    JPanel panel;
+    JTextArea textArea;
+    StringBuffer content;
+
 
     GoToHell(panelCH parent) {
         this.parent = parent;
@@ -38,6 +41,17 @@ public class GoToHell implements ActionListener {
     public void actionPerformed(ActionEvent e2) {
         this.paramKey = this.parent.keyText.getText();
         this.paramFile = this.parent.chooseText.getText();
+
+        frame = new JFrame("Final rezults");
+        panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        textArea = new JTextArea();
+        panel.add(new JScrollPane(textArea, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
+        content = new StringBuffer();
+        frame.setSize(600, 400);
+        frame.add(panel);
+
+
         if (this.paramKey.length() <= 0 && this.paramFile.length() <= 0) {
             JPanel pan1 = new JPanel();
             JLabel text11 = new JLabel("Nothing to do, sorry!");
@@ -51,11 +65,18 @@ public class GoToHell implements ActionListener {
 
                 docum.getDocumentElement().normalize();
                 Element root = docum.getDocumentElement();
-                System.out.println("Root element is: " + root.getNodeName());
-                System.out.println("---------------------------------");
+                String fLine = "Root element is: " + root.getNodeName();
+                //System.out.println(fLine);
+                content.append(fLine + "\n");
+                String sLine = "---------------------------------";
+                //System.out.println(sLine);
+                content.append(sLine + "\n");
                 NodeList noList = docum.getElementsByTagName(this.paramKey);
                 parSo(noList);
                 //parXpa(docum, paramKey);
+                textArea.setText(content.toString());
+                textArea.setCaretPosition(0);
+                frame.setVisible(true);
             } catch (Exception var7) {
                 var7.printStackTrace();
             }
@@ -78,7 +99,9 @@ public class GoToHell implements ActionListener {
     public void parSo(NodeList nnL) {
         for (int i = 0; i < nnL.getLength(); ++i) {
             Node uzelS = nnL.item(i);
-            System.out.print("Requested tag is: " + uzelS.getNodeName() + " ");
+            //System.out.print("Requested tag is: " + uzelS.getNodeName() + " ");
+            content.append("----------" + "\n");
+            content.append("Requested tag is: " + uzelS.getNodeName() + " ");
             NamedNodeMap nodeAtr = uzelS.getAttributes();
             String wwam = "";
             int mMax = nodeAtr.getLength();
@@ -89,22 +112,26 @@ public class GoToHell implements ActionListener {
                 } else {
                     wwam = newNN.getNodeName() + " = " + "\"" + newNN.getTextContent() + "\".";
                 }
-                System.out.print(wwam);
+                //System.out.print(wwam);
+                content.append(wwam);
             }
-            System.out.println("");
+            //System.out.println("");
+            content.append("\n" + "----------");
+            content.append("\n");
             parSU(uzelS, 0, this.probel);
         }
     }
 
     public void parSU(Node nodde, int level, String probe2) {
         NodeList parUzla = nodde.getChildNodes();
-        probe2 = probe2 + " ";
+        probe2 = probe2 + "   ";
         for (int j = 0; j < parUzla.getLength(); ++j) {
             Node samUz = parUzla.item(j);
             if (samUz.getNodeType() == Node.TEXT_NODE) {
                 continue;
             }
-            System.out.print(probe2 + samUz.getNodeName() + ": ");
+            //System.out.print(probe2 + samUz.getNodeName() + ": ");
+            content.append(probe2 + samUz.getNodeName() + ": ");
             String wam = "";
             if (samUz.hasAttributes()) {
                 NamedNodeMap attribs = samUz.getAttributes();
@@ -116,14 +143,17 @@ public class GoToHell implements ActionListener {
                     } else {
                         wam = newN.getNodeName() + " = " + "\"" + newN.getTextContent() + "\"";
                     }
-                    System.out.print(wam);
+                    //System.out.print(wam);
+                    content.append(wam);
                 }
             }
             if (samUz.getNodeType() != Node.TEXT_NODE) {
-                System.out.print(" " + samUz.getTextContent());
+                //System.out.print(" " + samUz.getTextContent());
+                content.append(" " + samUz.getTextContent());
             }
 
-            System.out.println("");
+            //System.out.println("");
+            content.append("\n");
             this.parSU(samUz, level + 1, probe2);
         }
     }
